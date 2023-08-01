@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-""" Route module for the API """
+"""
+a python module to initiate a flask app using Babel
+"""
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
-
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -11,55 +12,62 @@ users = {
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
 
-app = Flask(__name__)
-babel = Babel(app)
-
 
 class Config(object):
-    """ Available languages class """
-    LANGUAGES = ['en', 'fr']
-    # these are the inherent defaults just btw
-    BABEL_DEFAULT_LOCALE = 'en'
-    BABEL_DEFAULT_TIMEZONE = 'UTC'
-
-
-# set the above class object as the configuration for the app
-app.config.from_object(Config)
-
-
-@app.route('/', methods=['GET'], strict_slashes=False)
-def index() -> str:
-    """ GET /
-    Return:
-      - 5-index.html
     """
-    return render_template('5-index.html')
+    a class to configure babel
+    """
+    LANGUAGES = ["en", "fr"]
+    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_TIMEZONE = "UTC"
+
+
+app = Flask(__name__)
+app.config.from_object(Config)
+babel = Babel(app)
 
 
 @babel.localeselector
 def get_locale():
-    ''' get locale from request '''
-    locale = request.args.get("locale")
-    if locale:
-        return locale
-    return request.accept_languages.best_match(Config.LANGUAGES)
+    """
+    get_locale - function to get the local selector
+    """
+    lcl = request.args.get('locale', None)
+    if lcl and lcl in app.config['LANGUAGES']:
+        return lcl
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-def get_user() -> Union[dict, None]:
-    """ Returns user dict if ID can be found """
-    login_as = request.args.get("login_as", False)
-    if login_as:
-        user = users.get(int(login_as), False)
-        if user:
-            return user
-    return None
+@app.route('/', strict_slashes=False)
+def Welcome():
+    """
+    Welcome - a route to a 5-index html
+    """
+    return render_template('5-index.html')
+
+
+def get_user():
+    """
+    get_user - function that returns a given user
+    Arguments:
+        Nothing
+    Returns:
+        the user if it is found None other wise
+    """
+    user_id = request.args.get('login_as', None)
+    if user_id is None:
+        return None
+    return users.get(int(user_id))
 
 
 @app.before_request
 def before_request():
-    """ Finds user and sets as global on flask.g.user """
-    g.user = get_user()
+    """
+    a function to force this method to be executed before other methods
+    """
+    usr = get_user()
+    g.user = usr
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+    app.run(debug=True, host="0.0.0.0", port="5000")
