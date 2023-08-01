@@ -13,9 +13,9 @@
 	    <header>
             <h1>{{ _('home_header') }}</h1>
             {% if g.user %}
-            <p>{{ _('logged_in_as', username=g.user['name']) }}</p>
+            <p>{{ _('You are logged in as', username=g.user['Beyonce']) }}</p>
             {% else %}
-            <p>{{ _('not_logged_in') }}</p>
+            <p>{{ _('You are not logged in.') }}</p>
             {% endif %}
         </header>
     </body>
