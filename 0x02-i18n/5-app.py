@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-""" Basic Babel setup """
+"""
+a python module to initiate a flask app using Babel
+"""
 from flask import Flask, render_template, request, g
-from flask_babel import Babel, _
-from typing import Union
-
+from flask_babel import Babel
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -14,66 +14,60 @@ users = {
 
 
 class Config(object):
-    """ Configuration Babel """
+    """
+    a class to configure babel
+    """
     LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_TIMEZONE = 'UTC'
-    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__)
 app.config.from_object(Config)
 babel = Babel(app)
 
 
-@app.before_request
-def before_request(login_as: int = None):
-    """ Request of each function
-    """
-    user: dict = get_user()
-    print(user)
-    g.user = user
-
-
-def get_user() -> Union[dict, None]:
-    """ Get the user of the dict
-
-        Return User
-    """
-    login_user = request.args.get('login_as', None)
-
-    if login_user is None:
-        return None
-
-    user: dict = {}
-    user[login_user] = users.get(int(login_user))
-
-    return user[login_user]
-
-
 @babel.localeselector
 def get_locale():
-    """ Locale language
-
-        Return:
-            Best match to the language
     """
-    locale = request.args.get('locale', None)
-
-    if locale and locale in app.config['LANGUAGES']:
-        return locale
-
+    get_locale - function to get the local selector
+    """
+    lcl = request.args.get('locale', None)
+    if lcl and lcl in app.config['LANGUAGES']:
+        return lcl
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-@app.route('/', methods=['GET'], strict_slashes=False)
-def hello_world():
-    """ Greeting
-
-        Return:
-            Initial template html
+@app.route('/', strict_slashes=False)
+def Welcome():
+    """
+    Welcome - a route to a 5-index html
     """
     return render_template('5-index.html')
 
 
+def get_user():
+    """
+    get_user - function that returns a given user
+    Arguments:
+        Nothing
+    Returns:
+        the user if it is found None other wise
+    """
+    user_id = request.args.get('login_as', None)
+    if user_id is None:
+        return None
+    return users.get(int(user_id))
+
+
+@app.before_request
+def before_request():
+    """
+    a function to force this method to be executed before other methods
+    """
+    usr = get_user()
+    g.user = usr
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+    app.run(debug=True, host="0.0.0.0", port="5000")
