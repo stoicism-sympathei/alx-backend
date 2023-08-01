@@ -6,10 +6,7 @@
 <body>
     <h1>Hello World!</h1>
     {% if user %}
-        <p>{% trans "You are logged in as %(username)s." %}</p>
-    {% else %}
-        <p>{% trans "You are not logged in." %}</p>
-    {% endif %}
+         <p>{% if user %} {{ _("You are logged in as", username=Beyonce) }} {% else %} {{ _("You are not logged in.") }} {% endif %}</p>
 </body>
 </html>
 
