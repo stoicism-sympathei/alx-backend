@@ -1,15 +1,13 @@
-<!DOCTYPE html>
 <html>
-<head>
-    <title>Hello World!</title>
-</head>
-<body>
-    <h1>Hello World!</h1>
-    {% if user %}
-        <p>{% trans "You are logged in as %(username)s." %}</p>
+  <head>
+    <title>{{ _('home_title') }}</title>
+  </head>
+  <body>
+    <h1>{{ _('home_header') }}</h1>
+    {% if g.user %}
+    <p>{{ _('logged_in_as', username=g.user.name) }}</p>
     {% else %}
-        <p>{% trans "You are not logged in." %}</p>
+    <p>{{ _('not_logged_in') }}</p>
     {% endif %}
-</body>
+  </body>
 </html>
-

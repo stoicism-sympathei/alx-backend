@@ -1,22 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{{ _('home_title') }}</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
+        <title>{{ _("home_title") }}</title>
     </head>
     <body>
-        <!-- HEADER -->
-	    <header>
-            <h1>{{ _('home_header') }}</h1>
-            {% if g.user %}
-            <p>{{ _('You are logged in as', username=g.user['Beyonce']) }}</p>
-            {% else %}
-            <p>{{ _('You are not logged in.') }}</p>
-            {% endif %}
-        </header>
+        <h1>{{ _("home_header") }}</h1>
+        <p>{% if user %} {{ _("logged_in_as", username=user.name) }} {% else %} {{ _("not_logged_in") }} {% endif %}</p>
     </body>
 </html>
